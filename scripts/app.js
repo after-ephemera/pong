@@ -97,7 +97,7 @@ function computerMovement() {
 }
 
 function moveEverything() {
-  // computerMovement();
+  computerMovement();
   ballX += ballSpeedX;//Move the ball in the X direction
   //Check if we are on the edge of the canvas, and if so, change direction
   if (ballX - PADDLE_OFFSET_X - radius < canvasOrigin) {
