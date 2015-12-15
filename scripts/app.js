@@ -21,6 +21,8 @@ const WINNING_SCORE = 3;
 var playerScore = 0;
 var opponentScore = 0;
 
+var showWinScreen = false;
+
 function mouseXY(event) {
   var rect = canvas.getBoundingClientRect();
   var root = document.documentElement;
@@ -30,6 +32,14 @@ function mouseXY(event) {
     x: mouseX,
     y: mouseY,
   };
+}
+
+function handleMouseClick(event) {
+  if (showWinScreen) {
+    playerScore = 0;
+    opponentScore = 0;
+    showWinScreen = false;
+  }
 }
 
 window.onload = function() {
@@ -43,6 +53,8 @@ window.onload = function() {
     drawEverything();//Draw all elements of the game board
   }, second / fps);//Also include our framerate, how often to refresh
 
+  canvas.addEventListener('mousedown', handleMouseClick);
+
   canvas.addEventListener('mousemove',
   function(event) {
     var mousePos = mouseXY(event);
@@ -50,11 +62,34 @@ window.onload = function() {
   });
 };
 
-function drawEverything() {
+function drawNet() {
+  for (var i = 10; i < canvas.height; i += 40) {
+    canvasContext.fillStyle = 'white';//Fill background of screen
 
+    canvasContext.fillRect(canvas.width / 2 - 1, i, 2, 20);
+  }
+}
+
+function drawEverything() {
   canvasContext.fillStyle = 'black';//Fill background of screen
 
   canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+  canvasContext.fillStyle = 'white';//Set color for game elements
+
+  if (showWinScreen) {
+    if (playerScore >= WINNING_SCORE) {
+      canvasContext.fillText('YOU WIN!', 2 * canvas.width / 5, canvas.height / 2);
+      canvasContext.fillText('click to continue', 2 * canvas.width / 5, canvas.height - 50);
+    } else if (opponentScore >= WINNING_SCORE) {
+      canvasContext.fillText('YOU LOSE.', 2 * canvas.width / 5, canvas.height / 2);
+      canvasContext.fillText('click to continue', 2 * canvas.width / 5, canvas.height - 50);
+    }
+
+    return;
+  }
+
+  drawNet();//Draw the net for gameplay
 
   canvasContext.fillStyle = 'white';//Set color for game elements
 
@@ -78,8 +113,7 @@ function drawCircle(originX, originY, circleRadius, color) {
 
 function ballReset() {
   if (playerScore >= WINNING_SCORE || opponentScore >= WINNING_SCORE) {
-    playerScore = 0;
-    opponentScore = 0;
+    showWinScreen = true;
   }
 
   ballSpeedY = 4;
@@ -97,6 +131,7 @@ function computerMovement() {
 }
 
 function moveEverything() {
+
   computerMovement();
   ballX += ballSpeedX;//Move the ball in the X direction
   //Check if we are on the edge of the canvas, and if so, change direction
