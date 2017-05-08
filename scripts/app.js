@@ -23,6 +23,8 @@ var opponentScore = 0;
 
 var showWinScreen = false;
 
+var ballColor = 0x000000;
+
 function mouseXY(event) {
   var rect = canvas.getBoundingClientRect();
   var root = document.documentElement;
@@ -95,8 +97,12 @@ function drawEverything() {
 
   canvasContext.fillRect(PADDLE_OFFSET_X, playerY, PADDLE_WIDTH, PADDLE_HEIGHT);//Player paddle
 
-  drawCircle(ballX, ballY, radius, 'white');//the ball
+  var colorString = '#' + ('000000' + ballColor.toString(16)).substr(-6)
+  canvasContext.fillStyle = colorString;
+  console.log("Color is: ", colorString);
+  drawCircle(ballX, ballY, radius, colorString);//the ball
   // canvasContext.fillRect(ballX, 300, 40, 40);
+  canvasContext.fillStyle = 'white';//Set color for game element
 
   canvasContext.fillRect(canvas.width - PADDLE_OFFSET_X - PADDLE_WIDTH, opponentY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
@@ -131,6 +137,7 @@ function computerMovement() {
 }
 
 function moveEverything() {
+  ballColor = (ballColor+Math.random());
 
   computerMovement();
   ballX += ballSpeedX;//Move the ball in the X direction
